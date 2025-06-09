@@ -1,0 +1,52 @@
+<div id="eventList">
+<meta charset="UTF-8">
+    <h2>일정 목록</h2>
+    <!-- 공동 일정 목록 -->
+    <ul>
+        <th:block th:each="sharedEvent : ${sharedEvents}">
+            <li>
+                <strong th:text="${sharedEvent.title}">Event Title</strong><br>
+                <span th:utext="${sharedEvent.description}">Event Description</span><br>
+            </li>
+        </th:block>
+    </ul>
+    <ul>
+        <th:block th:each="event : ${events}">
+            <li th:if="${event.userId == session.userId}">
+                <strong th:text="${event.title}">Event Title</strong><br>
+                <span th:utext="${event.description}">Event Description</span><br>
+                <button type="button" class="editEvent"
+                        th:data-id="${event.id}"
+                        th:data-title="${event.title}"
+                        th:data-description="${event.description}">수정</button>
+                <button type="button" class="deleteEvent" th:data-id="${event.id}">삭제</button>
+            </li>
+        </th:block>
+    </ul>
+</div>
+
+
+
+<script>
+    $(document).off("click", ".editEvent").on("click", ".editEvent", function() {
+        const id = $(this).data("id");
+        const title = $(this).data("title");
+        const description = $(this).data("description");
+        openEditEventPanel(id, title, description);
+    });
+
+    $(document).off("click", ".deleteEvent").on("click", ".deleteEvent", function() {
+        const id = $(this).data("id");
+        openCustomConfirmModal((confirmed) => {
+            if (confirmed) {
+                $.post(`/event/deleteEvent`, { id: id }, function(response) {
+                    alert(response);
+                    showCardOverlay($("#eventDate").val()); // 일정 목록을 새로고침합니다.
+                }).fail(function() {
+                    alert("삭제에 실패했습니다.");
+                });
+            }
+        });
+    });
+
+</script>

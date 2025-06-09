@@ -1,0 +1,95 @@
+@charset "EUC-KR";
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    overflow-x: hidden;
+}
+header {
+    background-color: #ffffff;
+    padding: 15px 0;
+    border-bottom: 1px solid #dddddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed; /* 헤더를 고정시킵니다. */
+    width: 100%; /* 헤더가 화면 너비를 차지하도록 설정합니다. */
+    top: 0; /* 화면의 상단에 위치하게 합니다. */
+    z-index: 1000; /* 헤더가 다른 요소 위에 있도록 설정합니다. */
+}
+nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+nav a {
+    margin: 0 20px;
+    text-decoration: none;
+    color: #333333;
+    font-weight: bold;
+    transition: color 0.3s;
+    position: relative;
+}
+nav a:hover {
+    color: #007bff;
+}
+nav a::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 3px;
+    background: #007bff;
+    transition: width 0.3s;
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+nav a:hover::after {
+    width: 100%;
+}
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+.login-form {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+.login-form h1 {
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    color: #333333;
+    font-weight: 700;
+    text-align: center;
+}
+.login-form .form-group {
+    margin-bottom: 20px;
+}
+.login-form .form-group label {
+    font-size: 1.1em;
+    color: #666666;
+}
+.login-form .form-control {
+    padding: 10px;
+    font-size: 1.1em;
+    border-radius: 5px;
+}
+.login-form .btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    transition: background-color 0.3s;
+}
+.login-form .btn:hover {
+    background-color: #0056b3;
+}

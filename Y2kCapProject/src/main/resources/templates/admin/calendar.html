@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="kor">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 캘린더</title>
+    <link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+	crossorigin="anonymous">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link
+	href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap"
+	rel="stylesheet">
+
+<link rel="stylesheet" type="text/css" href="/css/home.css">
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 2.5rem;
+            color: #4a90e2;
+            letter-spacing: 1.5px;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            table-layout: fixed;
+        }
+
+        th, td {
+            padding: 20px;
+            text-align: center;
+            vertical-align: top;
+            border: 1px solid #eaeaea;
+            font-size: 1.1rem;
+        }
+
+        th {
+            background-color: #f4f7fc;
+            color: #4a90e2;
+            font-weight: 600;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            position: relative;
+            cursor: pointer;
+            height: 140px;
+            overflow: hidden;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        td:hover {
+            background-color: #f0f5ff;
+        }
+
+        td a {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+
+        .current-date {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.5rem;
+        }
+
+        .nav-buttons {
+            display: inline-block;
+        }
+
+        .nav-buttons button {
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            border: none;
+            background-color: #4a90e2;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 0 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-buttons button:hover {
+            background-color: #357ABD;
+        }
+
+        .shared-event-list {
+            font-size: 0.9rem;
+            margin-top: 5px;
+            padding-left: 0;
+            list-style: none;
+        }
+
+        .shared-event-list li {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            background-color: #f4f7fc;
+            padding: 5px;
+            border-radius: 3px;
+            margin-bottom: 5px;
+            transition: background-color 0.2s ease;
+        }
+
+        .shared-event-list li:hover {
+            background-color: #d9e4f7;
+        }
+
+        /* 카드 오버레이 스타일 */
+        .card-overlay {
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* 어두운 배경 */
+            justify-content: center; 
+            align-items: center;
+            z-index: 1000;
+        }
+        .card-overlay.active {
+            display: flex;
+        }
+
+        /* 카드 스타일 */
+        .card {
+        	
+            background-color: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            width: 90%; 
+            max-width: 500px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        /* 일정 등록 버튼 */
+        .add-event-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* 하단 패널 스타일 */
+        .bottom-panel {
+            position: fixed; 
+            bottom: -100%; 
+            left: 0; 
+            width: 100%; 
+            background-color: white;
+            transition: bottom 0.3s ease-in-out; 
+            padding: 20px; 
+            box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+            border-top-left-radius: 10px; 
+            border-top-right-radius: 10px;
+            z-index: 1001;
+        }
+        .bottom-panel.active { bottom: 0; }
+        
+        
+        
+        /* 기본 모달 스타일 */
+		.modal {
+		    display: none; /* 숨김 처리 */
+		    position: fixed;
+		    top: 0;
+		    left: 0;
+		    width: 100%;
+		    height: 100%;
+		    background: rgba(0, 0, 0, 0.5);
+		    justify-content: center;
+		    align-items: center;
+		    z-index :1001;
+		}
+		
+		.modal-content {
+		    background: white;
+		    padding: 20px;
+		    border-radius: 5px;
+		    text-align: center;
+		    width: 300px; /* 원하는 너비로 조정 */
+        	max-width: 90%; /* 화면이 좁을 때 최대 너비를 90%로 설정 */
+       		margin: 0 auto; /* 화면 중앙에 정렬 */
+		}
+		
+		#confirmDeleteButton, #cancelDeleteButton {
+	        padding: 5px 15px; /* 버튼 크기 조정 */
+	        font-size: 0.9rem; /* 글자 크기 조정 */
+	        margin: 5px;
+	        min-width: 70px; /* 버튼 최소 너비 조정 */
+	    }
+	    
+	    /* 공동 일정 스타일 */
+	    .shared-event {
+	        color: blue; /* 공동 일정을 파란색으로 표시 */
+	        font-weight: bold;
+	    }
+
+
+        /* 모바일 대응 */
+        @media screen and (max-width: 768px) {
+            table { width: 100%; }
+            td { height: 100px; font-size: 0.9rem; }
+            th { font-size: 1rem; }
+            .nav-buttons button { padding: 8px 16px; font-size: 1rem; }
+            .current-date { font-size: 1.3rem; }
+            .modal-content { width: 90%; }
+        }
+    </style>
+</head>
+<body>
+<header>
+		<nav role="navigation" aria-label="메인 내비게이션">
+			<a href="/admin/dashboard"> <img src="/img/logo.png"
+				class="logo" alt="Logo">
+			</a>
+				<a href="/board">게시판 </a>
+			<div>
+				<a href="/resident/community">커뮤니티 센터 예약 </a>
+			</div>
+			<div class="dropdown">
+				<a href="#">관리비<i class="fas fa-caret-down"></i></a>
+				<div class="dropdown-content">
+					<a th:href="@{/administration-cost}">등록</a>  
+					<a th:href="@{/administration-cost/view}">조회</a>
+				</div>
+			</div>
+			<a href="admin/calendar">캘린더</a> 
+			<a href="/map">주변 정보</a> 
+			<a href="/phonebook">전화번호부</a>
+
+				<!-- 로그인 여부에 따라 다른 메뉴 표시 -->
+        <div th:if="${username != null}">
+            <span th:text="'어서오세요, ' + (role == 'ADMIN' ? '관리자님!' : username + '님!')"></span>
+            <a th:href="@{${role == 'ADMIN' ? '/admin/logout' : '/residents/logout'}}">로그아웃</a>
+        </div>
+		</nav>
+	</header>
+
+<h1>공동 일정 관리</h1>
+<div class="current-date">
+    <div class="nav-buttons" style="display: inline; width: 33px; margin-right:6px;">
+            <a th:href="@{/admin/calendar(year=${year}, month=${month - 1})}">
+                <button><</button>
+            </a>
+        </div>
+        <span th:text="${year} + '년 ' + ${month} + '월'"></span>
+        <div class="nav-buttons" style="display: inline;">
+            <a th:href="@{/calendar(year=${year}, month=${month + 1})}">
+                <button>></button>
+            </a>
+        </div>
+</div>
+
+<div id="calendarContainer">
+    <table>
+        <thead>
+            <tr><th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th></tr>
+        </thead>
+        <tbody>
+    <tr th:each="week : ${calendarDays}">
+                <td th:each="day : ${week}">
+                    <a href="#" class="day" th:data-date="${day}" th:text="${day.dayOfMonth}"></a>
+                    <ul class="shared-event-list" th:if="${sharedEventsByDate[T(java.time.LocalDate).from(day)] != null}">
+                        <li th:each="sharedDescription : ${sharedEventsByDate[T(java.time.LocalDate).from(day)]}">
+                            <span th:text="${sharedDescription}" class="shared-event"></span>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+</tbody>
+    </table>
+</div>
+
+<!-- 공동 일정 추가/수정 모달 -->
+<div class="bottom-panel" id="addEventPanel">
+    <h3 id="panelTitle">공동 일정 추가</h3>
+    <form id="addEventForm" th:action="@{/admin/calendar/updateSharedEvent}" method="post">
+        <!-- 기존 이벤트의 ID를 저장할 hidden input 필드 추가 -->
+        <input type="hidden" name="id" id="eventId">
+        <input type="hidden" name="eventDate" id="eventDate">
+        <label for="title">제목:</label>
+        <input type="text" id="title" name="title" required><br>
+        <label for="description">내용:</label>
+        <textarea id="description" name="description" required></textarea><br>
+        <button type="submit" id="submitBtn">저장</button>
+    </form>
+    <button id='closeButton' onclick="toggleBottomPanel()">닫기</button>
+</div>
+    
+    <!-- 카드 오버레이 일정 목록 -->
+    <div class="card-overlay" id="eventOverlay">
+        <div class="card" id="eventListContainer">
+            <button class="add-event-btn" onclick="openAddEventPanel()">일정 추가</button>
+            <div id="eventListContent"></div>
+        </div>
+    </div>
+    
+    <!-- 커스텀 모달 구조 -->
+	<div id="customConfirmModal" class="modal">
+	    <div class="modal-content">
+	        <p>삭제하시겠습니까?</p>
+	        <button id="confirmDeleteButton">확인</button>
+	        <button id="cancelDeleteButton">취소</button>
+	    </div>
+	</div>
+
+
+<!-- 스크립트 -->
+<script>
+$(document).ready(function() {
+    initializeEventListeners();  // 페이지 로드 시 이벤트 리스너 등록
+});
+
+function initializeEventListeners() {
+    // 날짜 클릭 시 카드 오버레이 표시
+    $(document).on("click", ".day", function(event) {
+        event.preventDefault();
+        const date = $(this).data("date");
+        showCardOverlay(date);
+    });
+
+    // 일정 추가/수정 폼 제출 처리
+    $("#addEventForm").on("submit", function(event) {
+        event.preventDefault();
+        const isUpdate = $("#eventId").val();  // 업데이트 여부 확인
+        const url = isUpdate ? "/admin/calendar/updateSharedEvent" : "/admin/calendar/addSharedEvent";
+        const formData = $(this).serialize();
+
+        $.post(url, formData)
+            .done(function(response) {
+                alert(response);
+                toggleBottomPanel();
+                refreshEventList();
+                refreshCalendar();
+            })
+            .fail(function() {
+                alert("일정 저장에 실패했습니다.");
+            });
+    });
+
+    // 수정 버튼 클릭 시 일정 수정 패널 열기
+    $(document).off("click", ".editEvent").on("click", ".editEvent", function() {
+        const id = $(this).data("id");
+        const title = $(this).data("title");
+        const description = $(this).data("description");
+        openEditEventPanel(id, title, description);
+    });
+
+    // 삭제 버튼 클릭 시 삭제 요청 처리
+   $(document).off("click", ".deleteEvent").on("click", ".deleteEvent", function() {
+    const id = $(this).data("id");
+    openCustomConfirmModal((confirmed) => {
+        if (confirmed) {
+            $.post(`/admin/calendar/deleteSharedEvent`, { id: id }, function(response) {
+                alert(response);
+                showCardOverlay($("#eventDate").val()); // 일정 목록을 새로고침합니다.
+            }).fail(function() {
+                alert("삭제에 실패했습니다.");
+            });
+        }
+    });
+});
+
+
+    // 카드 외부 클릭 시 오버레이 닫기
+    $(window).on("click", function(event) {
+        if ($(event.target).is('#eventOverlay')) {
+            hideCardOverlay();
+            refreshCalendar(); // 달력 새로고침
+        }
+    });
+}
+
+function refreshCalendar() {
+    const year = new Date().getFullYear();
+    const month = new Date().getMonth() + 1;
+
+    $.get(`/admin/calendar?year=${year}&month=${month}&ajax=true`)
+        .done(function(data) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(data, "text/html");
+            const calendarContent = $(doc).find("#calendarContainer").html();
+            $('#calendarContainer').html(calendarContent);
+        })
+        .fail(function() {
+            alert("달력 새로고침에 실패했습니다.");
+        });
+}
+
+function refreshEventList() {
+    const selectedDate = $("#eventDate").val();
+    fetch(`/admin/calendar/getEvents?date=${selectedDate}`)
+        .then(response => response.text())
+        .then(html => {
+            $('#eventListContent').html(html);  // 새로운 목록 업데이트
+        })
+        .catch(error => console.error("Event list update failed:", error));
+}
+
+function toggleBottomPanel() {
+    const panel = document.getElementById('addEventPanel');
+    panel.classList.toggle('active');
+}
+
+function showCardOverlay(date) {
+    $("#eventDate").val(date);
+    fetch(`/admin/calendar/getEvents?date=${date}`)
+        .then(response => response.text())
+        .then(html => {
+            $('#eventListContent').html(html);
+            $('#eventOverlay').addClass('active').fadeIn();
+        });
+}
+
+function hideCardOverlay() {
+    $('#eventOverlay').removeClass('active').fadeOut();
+}
+
+function openAddEventPanel() {
+    $('#panelTitle').text('공동 일정 추가');
+    $('#submitBtn').text('추가');
+    $('#eventId').val('');  // ID를 비워둠 (새로운 일정 추가)
+    $('#title').val('');
+    $('#description').val('');
+    toggleBottomPanel();
+}
+
+function openEditEventPanel(id, title, description) {
+    $('#panelTitle').text('공동 일정 수정');
+    $('#submitBtn').text('수정');
+    $('#eventId').val(id);  // ID 설정 (기존 일정 수정)
+    $('#title').val(title);
+    $('#description').val(description);
+    toggleBottomPanel();
+}
+
+function openCustomConfirmModal(callback) {
+    const modal = document.getElementById("customConfirmModal");
+    modal.style.display = "flex";
+
+    document.getElementById("confirmDeleteButton").onclick = function() {
+        callback(true);
+        modal.style.display = "none";
+    };
+
+    document.getElementById("cancelDeleteButton").onclick = function() {
+        callback(false);
+        modal.style.display = "none";
+    };
+}
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+@charset "UTF-8";
+
+
+body {
+	font-family: 'Noto Sans KR', sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #f5f5f5;
+	overflow-x: hidden;
+}
+
+
+
+.map_wrap {
+    position: relative;
+    width: 60%;
+    height: 640px; /* 더 크게 조정 */
+    background-color: #fff;
+    margin: 40px auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#menu_wrap {
+    position: absolute;
+    top: 20px;
+    right: 20px; /* 우측에 배치 */
+    width: 300px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+#menu_wrap form {
+    margin-bottom: 10px;
+    text-align: right;
+}
+
+#menu_wrap form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+#menu_wrap form input[type="text"] {
+    width: 150px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 5px; /* 간격 추가 */
+}
+
+#menu_wrap form button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#placesList {
+    list-style: none;
+    padding: 10px;
+    margin-top: 10px;
+    border-top: 1px solid #ddd;
+    max-height: 500px; /* 최대 높이 설정 */
+    overflow-y: auto; /* 스크롤 가능하도록 */
+}
+
+#placesList .item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+#placesList .item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+#placesList .item .info {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+#placesList .item h5 {
+    margin-bottom: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+#pagination {
+    display: none; /* 페이지 숨김 */
+}

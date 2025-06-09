@@ -1,0 +1,57 @@
+@charset "EUC-KR";
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    overflow-x: hidden;
+}
+header {
+    background-color: #ffffff;
+    padding: 15px 0;
+    border-bottom: 1px solid #dddddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 50px;
+}
+nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+nav a {
+    margin: 0 20px;
+    text-decoration: none;
+    color: #333333;
+    font-weight: bold;
+    transition: color 0.3s;
+    position: relative;
+}
+nav a:hover {
+    color: #007bff;
+}
+nav a::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 3px;
+    background: #007bff;
+    transition: width 0.3s;
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+nav a:hover::after {
+    width: 100%;
+}
+
+footer {
+	text-align: center;
+	padding: 20px;
+	background-color: #ffffff;
+	border-top: 1px solid #dddddd;
+	margin-top: 50px;
+	font-size: 0.9em;
+	color: #888888;
+}

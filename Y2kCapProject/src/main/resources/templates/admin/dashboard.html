@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="아파트 입주민을 위한 최고의 편의 서비스 제공">
+<meta name="keywords" content="아파트, 입주민, 편의 서비스, 관리비, 커뮤니티 센터, 주변 정보">
+<title>Y2K 관리자</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="/css/home.css">
+<style>
+.carousel-item img {
+    margin-top: 50px;
+    max-height: 870px;
+    object-fit: cover;
+    width: 100%;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <nav role="navigation" aria-label="메인 내비게이션">
+        <a href="/"> <img src="/img/logo.png" class="logo" alt="Logo"></a>
+
+        <!-- 게시판 메뉴 -->
+        <a href="/board" th:if="${role == 'ADMIN' or role == 'RESIDENT'}">게시판</a>
+
+        <!-- 커뮤니티 센터 예약 -->
+        <a href="/resident/community" th:if="${role == 'ADMIN' or role == 'RESIDENT'}">커뮤니티 센터 예약</a>
+
+        <!-- 관리비 메뉴 (관리자 전용) -->
+        <div class="dropdown" th:if="${role == 'ADMIN'}">
+            <a href="#">관리비 <i class="fas fa-caret-down"></i></a>
+            <div class="dropdown-content">
+                <a href="/administration-cost">등록</a>
+                <a href="/administration-cost/view">조회</a>
+            </div>
+        </div>
+
+        <!-- 캘린더: 관리자와 입주민에 따라 링크 변경 -->
+        <a th:href="${role == 'ADMIN' ? '/admin/calendar' : '/calendar'}">캘린더</a>
+
+        <!-- 주변 정보 -->
+        <a href="/map" th:if="${role == 'ADMIN' or role == 'RESIDENT'}">주변 정보</a>
+
+        <!-- 전화번호부 -->
+        <a href="/phonebook" th:if="${role == 'ADMIN' or role == 'RESIDENT'}">전화번호부</a>
+
+        <!-- 로그인 여부에 따라 다른 메뉴 표시 -->
+        <div th:if="${username != null}">
+            <span th:text="'어서오세요, ' + (role == 'ADMIN' ? '관리자님!' : username + '님!')"></span>
+            <a th:href="@{${role == 'ADMIN' ? '/admin/logout' : '/residents/logout'}}">로그아웃</a>
+        </div>
+
+        <!-- 비로그인 상태 -->
+        <div th:if="${username == null}">
+            <div class="dropdown">
+                <a href="#">로그인 <i class="fas fa-caret-down" aria-hidden="true"></i></a>
+                <div class="dropdown-content" role="menu">
+                    <a href="/residents/login" role="menuitem">입주민</a>
+                    <a href="/admin/login" role="menuitem">관리자</a>
+                </div>
+            </div>
+            <a href="/residents/register">회원가입</a>
+        </div>
+    </nav>
+</header>
+
+<div id="carouselExample" class="carousel slide">
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="/img/mainimg.png" class="d-block w-100" alt="...">
+        </div>
+    </div>
+</div>
+<div class="container">
+    <h1>아파트 입주민을 위한 편의!</h1>
+
+    <div class="content">
+        <div class="card">
+            <img src="img/graph.png">
+            <h2>관리비 조회</h2>
+            <p>관리비 조회와 비교 그래프를 통해 투명하게 확인.</p>
+        </div>
+        <div class="card">
+            <img src="img/calendar.png">
+            <h2>나만의 캘린더</h2>
+            <p>일정 등록, 센터 예약 확인까지 한 번에!</p>
+        </div>
+        <div class="card">
+            <img src="img/announcement.png">
+            <h2>공지사항</h2>
+            <p>중요한 공지사항을 놓치지 마세요.</p>
+        </div>
+        <div class="card">
+            <img src="img/community.png">
+            <h2>커뮤니티 센터</h2>
+            <p>커뮤니티 센터 예약 및 확인.</p>
+        </div>
+        <div class="card">
+            <img src="img/map.png">
+            <h2>주변 정보</h2>
+            <p>식당, 카페 및 상점 정보를 확인하세요.</p>
+        </div>
+        <div class="card">
+            <img src="img/anonymity.png">
+            <h2>익명성 보장</h2>
+            <p>개인정보 유출 방지</p>
+        </div>
+    </div>
+</div>
+
+<section class="testimonials">
+    <h2>입주민 후기</h2>
+    <article class="testimonial-item">
+        <p>"이 서비스 덕분에 관리비를 쉽게 조회하고 비교할 수 있어요!" - 홍길동</p>
+    </article>
+    <article class="testimonial-item">
+        <p>"커뮤니티 센터 예약이 정말 간편해졌습니다." - 김철수</p>
+    </article>
+    <article class="testimonial-item">
+        <p>"공지사항을 놓치지 않고 확인할 수 있어요." - 이영희</p>
+    </article>
+</section>
+
+<section class="news-updates">
+    <h2>뉴스 및 업데이트</h2>
+    <article class="news-item">
+        <p>2024년 7월 12일 - 새로운 관리비 납부 시스템 도입</p>
+    </article>
+    <article class="news-item">
+        <p>2024년 6월 20일 - 커뮤니티 센터 예약 시스템 업데이트</p>
+    </article>
+</section>
+
+<section class="faq">
+    <h2>자주 묻는 질문</h2>
+    <article class="faq-item">
+        <p>Q: 관리비를 어떻게 조회하나요?</p>
+        <p>A: 로그인 후 '관리비 조회' 메뉴에서 확인할 수 있습니다.</p>
+    </article>
+    <article class="faq-item">
+        <p>Q: 커뮤니티 센터 예약은 어떻게 하나요?</p>
+        <p>A: '커뮤니티 센터 예약' 메뉴에서 예약을 진행할 수 있습니다.</p>
+    </article>
+</section>
+
+<footer>
+    <p>© All right reserved</p>
+</footer>
+
+<!-- Bootstrap JavaScript 및 추가 스크립트 가져오기 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

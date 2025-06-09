@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="kor">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Event</title>
+</head>
+<body>
+    <h1>Add Event</h1>
+
+    <form id="addEventForm">
+        <input type="hidden" name="eventDate" id="eventDate" value="2024-10-30">
+		<input type="hidden" name="userId" id="userId" value="${session.userId}">
+		
+        <label for="title">제목:</label>
+        <input type="text" id="title" name="title" required><br>
+
+        <label for="description">내용:</label>
+        <textarea id="description" name="description" required></textarea><br>
+
+        <button type="submit">추가</button>
+    </form>
+
+    <a href="/calendar">돌아가기</a>
+
+    <script>
+        document.getElementById("addEventForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(this);
+
+            fetch("/event/addEvent", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert("일정이 등록되었습니다.");
+                document.getElementById("title").value = '';
+                document.getElementById("description").value = '';
+                updateEventList();
+            })
+            .catch(error => console.error("Error:", error));
+        });
+
+        function updateEventList() {
+        	const date = document.getElementById("eventDate").value;
+            const userId = document.getElementById("userId").value;
+            fetch(`/event/getEvents?date=${date}&userId=${userId}`) // userId를 포함하여 호출
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById("eventList").innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+@charset "EUC-KR";
+
+body {
+	font-family: 'Noto Sans KR', sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #f5f5f5;
+	overflow-x: hidden;
+}
+
+header {
+	background-color: #ffffff;
+	padding: 15px 0;
+	border-bottom: 1px solid #dddddd;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	margin-bottom:50px;
+	position: fixed; /* 헤더를 고정시킵니다. */
+    width: 100%; /* 헤더가 화면 너비를 차지하도록 설정합니다. */
+    top: 0; /* 화면의 상단에 위치하게 합니다. */
+    z-index: 1000; /* 헤더가 다른 요소 위에 있도록 설정합니다. */
+}
+h1 {
+    text-align: left;
+    margin-top: 130px;
+}
+nav {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+nav a {
+	margin: 0 20px;
+	text-decoration: none;
+	color: #333333;
+	font-weight: bold;
+	transition: color 0.3s;
+	position: relative;
+}
+
+nav a:hover {
+	color: #007bff;
+}
+
+nav a::after {
+	content: '';
+	display: block;
+	width: 0;
+	height: 3px;
+	background: #007bff;
+	transition: width 0.3s;
+	position: absolute;
+	bottom: -10px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+nav a:hover::after {
+	width: 100%;
+}
+
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: #ffffff;
+	min-width: 160px;
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+	z-index: 1;
+	border-radius: 4px;
+}
+
+.dropdown-content a {
+	color: #333333;
+	padding: 12px 16px;
+	text-decoration: none;
+	display: block;
+	text-align: left;
+}
+
+.dropdown-content a:hover {
+	background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+.container {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 20px;
+}
+
+.tabs {
+	display: flex;
+	justify-content: left;
+	margin-bottom: 20px;
+}
+
+.tabs button {
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 20px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	padding: 10px 20px;
+	cursor: pointer;
+	margin: 0 5px;
+	transition: background-color 0.3s, color 0.3s;
+}
+
+.tabs button.active {
+	background-color: #007bff;
+	color: #fff;
+}
+
+.card {
+	background-color: #fff;
+	padding: 20px;
+	margin-bottom: 20px;
+	border-radius: 30px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+	transform: translateY(-10px);
+	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.card .info {
+	flex-grow: 1;
+}
+
+.card .info h2 {
+	margin: 0;
+	font-size: 1.5em;
+	color: #333;
+}
+
+.card .info p {
+	margin: 5px 0;
+	color: #666;
+}
+
+.card button {
+	background-color: #007bff;
+	color: #fff;
+	border: none;
+	padding: 10px 20px;
+	cursor: pointer;
+	border-radius: 20px;
+	transition: background-color 0.3s;
+}
+
+.card button:hover {
+	background-color: #0056b3;
+}
+
+footer {
+	text-align: center;
+	padding: 20px;
+	background-color: #ffffff;
+	border-top: 1px solid #dddddd;
+	margin-top: 95px;
+	font-size: 0.9em;
+	color: #888888;
+}

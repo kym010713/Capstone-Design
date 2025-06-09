@@ -1,0 +1,43 @@
+<div id="eventList">
+<meta charset="UTF-8">
+    <h2>공동 일정 목록</h2>
+    <ul>
+        <th:block th:each="event : ${sharedEvents}">
+            <li>
+                <strong th:text="${event.title}">Event Title</strong><br>
+                <span th:utext="${event.description}">Event Description</span><br>
+                <button type="button" class="editEvent"
+                        th:data-id="${event.id}"
+                        th:data-title="${event.title}"
+                        th:data-description="${event.description}">수정</button>
+                <button type="button" class="deleteEvent" th:data-id="${event.id}">삭제</button>
+            </li>
+        </th:block>
+    </ul>
+</div>
+
+<script>
+    $(document).off("click", ".editEvent").on("click", ".editEvent", function() {
+        const id = $(this).data("id");
+        const title = $(this).data("title");
+        const description = $(this).data("description");
+        openEditEventPanel(id, title, description);
+    });
+
+    $(document).off("click", ".deleteEvent").on("click", ".deleteEvent", function() {
+        const id = $(this).data("id");
+        console.log("Deleting event with id:", id); // 확인용 로그 추가
+        openCustomConfirmModal((confirmed) => {
+            if (confirmed) {
+                $.post(`/admin/calendar/deleteSharedEvent`, { id: id }, function(response) {
+                    alert(response);
+                    showCardOverlay($("#eventDate").val());
+                }).fail(function() {
+                    alert("삭제에 실패했습니다.");
+                });
+            }
+        });
+    });
+
+
+</script>

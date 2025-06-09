@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공동 일정 추가</title>
+</head>
+<body>
+    <h1>공동 일정 추가</h1>
+
+    <form id="addSharedEventForm">
+        <input type="hidden" name="eventDate" id="eventDate" value="2024-10-30">
+
+        <label for="title">제목:</label>
+        <input type="text" id="title" name="title" required><br>
+
+        <label for="description">내용:</label>
+        <textarea id="description" name="description" required></textarea><br>
+
+        <button type="submit">추가</button>
+    </form>
+
+    <a href="/admin/calendar">돌아가기</a>
+
+    <script>
+        document.getElementById("addSharedEventForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(this);
+
+            fetch("/admin/addSharedEvent", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert("공동 일정이 등록되었습니다.");
+                document.getElementById("title").value = '';
+                document.getElementById("description").value = '';
+                updateSharedEventList();
+            })
+            .catch(error => console.error("Error:", error));
+        });
+
+        function updateSharedEventList() {
+            const date = document.getElementById("eventDate").value;
+            fetch(`/admin/event/getSharedEvents?date=${date}`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById("eventList").innerHTML = html;
+            });
+        }
+    </script>
+</body>
+</html>

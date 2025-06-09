@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>독서실 예약</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+	crossorigin="anonymous">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link
+	href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap"
+	rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="/css/home.css">
+    
+<style>
+    /* 기본적인 스타일 */
+       body {
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 2.5rem;
+            color: #4a90e2;
+            letter-spacing: 1.5px;
+        }
+
+    /* 달력 스타일 */
+    .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 5px;
+        width: 80%;
+        margin: 0 auto 20px;
+    }
+
+    .calendar-dates {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+    }
+
+    .calendar div, .calendar-dates div {
+        padding: 10px;
+        background-color: #f0f0f0;
+        text-align: center;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+    .calendar .day-header {
+        font-weight: bold;
+        background-color: #4a90e2;
+        color: #fff;
+        border-radius: 4px;
+    }
+
+    .calendar .empty-day {
+        background-color: white;
+    }
+
+    .calendar .day {
+        background-color: #e0e0e0;
+        color: #000;
+        cursor: pointer;
+    }
+
+    .calendar .day.selected {
+        background-color: #4a90e2;
+        color: #fff;
+    }
+
+    .calendar .day.disabled {
+        background-color: #d3d3d3;
+        cursor: not-allowed;
+    }
+
+    /* 좌석 선택 스타일 */
+    .seat-selection {
+        width: 80%;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .seat-selection h3 {
+        color: #4a90e2;
+    }
+
+    .seat {
+        width: 60px;
+        height: 60px;
+        background-color: #e0e0e0;
+        border-radius: 4px;
+        margin: 5px;
+        text-align: center;
+        line-height: 60px;
+        cursor: pointer;
+        display: inline-block;
+        transition: background-color 0.3s ease;
+    }
+
+    .seat.selected {
+        background-color: #4a90e2;
+        color: #fff;
+    }
+
+    /* 시간 선택 스타일 */
+    .time-selection {
+        width: 80%;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .time-selection h3 {
+        color: #4a90e2;
+        margin-bottom: 10px;
+    }
+
+    .time-selection label {
+        margin-right: 10px;
+        font-weight: bold;
+    }
+
+    .time-selection select {
+        padding: 5px;
+        font-size: 1rem;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        transition: border-color 0.3s ease;
+    }
+
+    .time-selection select:focus {
+        border-color: #4a90e2;
+        outline: none;
+    }
+
+    .warning-message {
+        color: red;
+        display: none;
+        font-size: 0.9rem;
+        margin-top: 10px;
+    }
+
+    /* 예약 버튼 스타일 */
+    form {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    form button {
+        padding: 12px 24px;
+        font-size: 1.2rem;
+        color: #fff;
+        background-color: #4a90e2;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    form button:hover {
+        background-color: #357ABD;
+    }
+
+    /* 이전, 다음 달 이동 버튼 */
+    .month-navigation {
+        width: 80%;
+        margin: 20px auto;
+        text-align: center;
+    }
+
+    .month-navigation a {
+        font-size: 1.5rem;
+        color: #4a90e2;
+        margin: 0 15px;
+        text-decoration: none;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .month-navigation a:hover {
+        color: #357ABD;
+    }
+
+    .month-navigation span {
+        font-size: 1.3rem;
+        color: #333;
+    }
+</style>
+</head>
+<body>
+	<header>
+		<nav role="navigation" aria-label="메인 내비게이션">
+			<a href="/"> <img src="/img/logo.png"
+				class="logo" alt="Logo">
+			</a>
+				<a href="/board">게시판 </a>
+			<div>
+				<a href="/resident/community">편의시설 예약</a>
+			</div>
+			<div class="dropdown">
+				<a href="#">관리비<i class="fas fa-caret-down"></i></a>
+				<div class="dropdown-content">  
+					<a th:href="@{/administration-cost/view/buildingNumber/unitNumber}">조회</a>
+				</div>
+			</div>
+			<a href="/calendar">캘린더</a> 
+			<a href="/map">주변 정보</a>  
+			<a href="/phonebook">전화번호부</a>
+
+				<!-- 로그인 여부에 따라 다른 메뉴 표시 -->
+        <div th:if="${username != null}">
+            <span>환영합니다, <span th:text="${username}">사용자</span>님!</span>
+            <a href="/mypage">마이페이지</a>
+            <a th:href="@{/residents/logout}">로그아웃</a>
+        </div>
+        
+        <div th:if="${username == null}">
+            <div class="dropdown">
+                <a href="#">로그인 <i class="fas fa-caret-down" aria-hidden="true"></i></a>
+                <div class="dropdown-content" role="menu">
+                    <a href="/residents/login" role="menuitem">입주민</a>
+                    <a href="#" role="menuitem">관리자</a>
+                </div>
+            </div>
+            <a href="/residents/register">회원가입</a>
+        </div>
+		</nav>
+	</header><br><br><br>
+
+    <h1>독서실 예약</h1>
+
+    <!-- 이전 달, 다음 달 이동 버튼 -->
+    <div class="month-navigation">
+        <a th:href="@{/resident/communityCenter/studyRoom(year=${prevMonth.year}, month=${prevMonth.monthValue})}">&lt;</a>
+        <span th:text="${yearMonth}"></span>
+        <a th:href="@{/resident/communityCenter/studyRoom(year=${nextMonth.year}, month=${nextMonth.monthValue})}">&gt;</a>
+    </div>
+
+    <!-- 달력 표시 -->
+    <div class="calendar">
+        <!-- 요일 헤더 -->
+        <div class="day-header">일</div>
+        <div class="day-header">월</div>
+        <div class="day-header">화</div>
+        <div class="day-header">수</div>
+        <div class="day-header">목</div>
+        <div class="day-header">금</div>
+        <div class="day-header">토</div>
+
+        <!-- 빈 공간 채우기 -->
+        <div th:each="emptyDay : ${#numbers.sequence(1, firstDayOfWeek)}" class="empty-day"></div>
+
+        <!-- 날짜 -->
+        <div th:each="day : ${daysInMonth}" th:text="${day.dayOfMonth}" class="day" th:data-date="${day.dayOfMonth}"></div>
+    </div>
+
+    <!-- 좌석 선택 -->
+    <div class="seat-selection">
+        <h3>좌석 선택</h3>
+        <div>
+            <div th:each="seat : ${#numbers.sequence(1, 30)}" th:text="${seat}" class="seat" th:data-seat="${seat}"></div>
+        </div>
+    </div>
+
+    <!-- 시간 선택 -->
+    <div class="time-selection">
+        <h3>시간 선택</h3>
+        <label for="entryTime">입실 시간: </label>
+        <select id="entryTime">
+            <option th:each="hour : ${#numbers.sequence(0, 23)}" th:text="${hour} + ':00'" th:value="${hour}"></option>
+        </select>
+        <label for="exitTime">퇴실 시간: </label>
+        <select id="exitTime" disabled>
+            <option th:each="hour : ${#numbers.sequence(0, 23)}" th:text="${hour} + ':00'" th:value="${hour}"></option>
+        </select>
+
+        <!-- 경고 메시지 -->
+        <p id="warningMessage" class="warning-message">퇴실 시간은 입실 시간보다 이후여야 합니다!</p>
+    </div>
+
+    <!-- 예약 버튼 -->
+    <form action="/resident/communityCenter/studyRoom/reserve" method="post">
+        <input type="hidden" name="location" value="Study Room">
+        <input type="hidden" id="selectedDate" name="date">
+        <input type="hidden" id="selectedSeat" name="seatNumber">
+        <input type="hidden" id="selectedEntryTime" name="entryTime">
+        <input type="hidden" id="selectedExitTime" name="exitTime">
+        <button type="submit">예약 확정</button>
+    </form>
+</body>
+
+
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+	       // 오늘 날짜 설정
+	       const today = new Date();
+	       const todayYear = today.getFullYear();
+	       const todayMonth = today.getMonth() + 1; // 월은 1부터 시작
+	       const todayDate = today.getDate();
+
+	       console.log(`오늘 날짜: ${todayYear}-${String(todayMonth).padStart(2, '0')}-${String(todayDate).padStart(2, '0')}`);
+
+	       // yearMonth 요소에서 연도와 월 정보를 가져오기
+	       const yearMonthElement = document.querySelector(".month-navigation span");
+	       const yearMonthText = yearMonthElement ? yearMonthElement.textContent.trim() : "";
+	       console.log(`yearMonth 텍스트: ${yearMonthText}`);
+
+	       // yearMonth가 유효할 때만 실행
+	       if (yearMonthText) {
+	           const [year, month] = yearMonthText.split("-").map(Number);
+
+	           // 날짜 선택 이벤트
+	           const dayElements = document.querySelectorAll('.calendar .day');
+	           
+	           // 모든 날짜 초기화 (선택 상태 해제)
+	           dayElements.forEach(function(element) {
+	               element.classList.remove('selected'); // 모든 날짜에서 selected 클래스 제거
+	               element.style.backgroundColor = '#e0e0e0'; // 기본 배경색
+	               element.style.color = '#000'; // 기본 텍스트 색상
+	               element.style.pointerEvents = 'none'; // 모든 날짜를 기본적으로 선택 불가로 설정
+	           });
+
+	           // 오직 오늘 날짜에만 선택 가능하게 설정
+	           dayElements.forEach(function(element) {
+	               const selectedDay = parseInt(element.getAttribute('data-date'));
+	               const fullDate = `${year}-${String(month).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
+	               console.log(`fullDate: ${fullDate}, 오늘 날짜 비교: ${todayYear}-${String(todayMonth).padStart(2, '0')}-${String(todayDate).padStart(2, '0')}`);
+
+	               // 오늘 날짜와 비교하여 오늘 날짜에만 스타일 적용
+	               if (year === todayYear && month === todayMonth && selectedDay === todayDate) {
+	                   element.classList.add('selected'); // 오늘 날짜에만 선택 스타일 적용
+	                   element.style.backgroundColor = '#4a90e2';
+	                   element.style.color = '#fff';
+	                   element.style.pointerEvents = 'auto'; // 오늘 날짜만 선택 가능하게 설정
+	                   element.style.cursor = 'pointer';
+
+	                   // 오늘 날짜 클릭 이벤트 추가
+	                   element.addEventListener('click', function() {
+	                       // 모든 날짜 선택 해제 후 오늘 날짜 선택
+	                       dayElements.forEach(function(el) {
+	                           el.classList.remove('selected');
+	                           el.style.backgroundColor = '#e0e0e0';
+	                           el.style.color = '#000';
+	                       });
+	                       element.classList.add('selected');
+	                       element.style.backgroundColor = '#4a90e2';
+	                       element.style.color = '#fff';
+	                       document.getElementById('selectedDate').value = fullDate;
+
+	                       // 선택된 날짜를 localStorage에 저장
+	                       localStorage.setItem('selectedDate', fullDate);
+	                   });
+	               }
+	           });
+	       } else {
+	           console.error("yearMonth 텍스트를 가져오지 못했습니다. 날짜 정보가 포함된 올바른 요소를 확인해 주세요.");
+	       }
+
+	       // 좌석 선택 이벤트
+	       const seatElements = document.querySelectorAll('.seat');
+	       seatElements.forEach(function(element) {
+	           element.addEventListener('click', function() {
+	               seatElements.forEach(function(el) {
+	                   el.classList.remove('selected');
+	               });
+	               element.classList.add('selected');
+	               const selectedSeat = element.getAttribute('data-seat');
+	               document.getElementById('selectedSeat').value = selectedSeat; // 좌석 번호 설정
+	               
+	               // 선택된 좌석을 localStorage에 저장
+	               localStorage.setItem('selectedSeat', selectedSeat);
+	           });
+	       });
+
+	       // 입실 시간과 퇴실 시간 관련 요소 가져오기
+	       const entryTimeSelect = document.getElementById('entryTime');
+	       const exitTimeSelect = document.getElementById('exitTime');
+	       const warningMessage = document.getElementById('warningMessage');
+
+	       // 페이지 로드 시 저장된 입실, 퇴실 시간 복원
+	       const storedEntryTime = localStorage.getItem('selectedEntryTime') || ""; // 기본값을 빈 문자열로 설정
+	       const storedExitTime = localStorage.getItem('selectedExitTime') || ""; // 기본값을 빈 문자열로 설정
+
+	       if (storedEntryTime) {
+	           entryTimeSelect.value = storedEntryTime;
+	           document.getElementById('selectedEntryTime').value = storedEntryTime;
+	           exitTimeSelect.disabled = false; // 입실 시간이 있을 경우 퇴실 시간 선택 가능
+	       }
+
+	       if (storedExitTime) {
+	           exitTimeSelect.value = storedExitTime;
+	           document.getElementById('selectedExitTime').value = storedExitTime;
+	       }
+
+	       // 입실 시간 선택 이벤트
+	       entryTimeSelect.addEventListener('change', function() {
+	           document.getElementById('selectedEntryTime').value = this.value;
+	           console.log('Entry time selected:', this.value);
+
+	           // 입실 시간 선택 후 퇴실 시간 선택 가능
+	           exitTimeSelect.disabled = false; // 입실 시간이 선택되면 퇴실 시간 활성화
+	           exitTimeSelect.value = ""; // 퇴실 시간 초기화
+	           document.getElementById('selectedExitTime').value = "";
+	           warningMessage.style.display = 'none'; // 경고 메시지 숨기기
+
+	           // 선택된 입실 시간을 localStorage에 저장
+	           localStorage.setItem('selectedEntryTime', this.value);
+	       });
+
+	       // 퇴실 시간 선택 이벤트
+	       exitTimeSelect.addEventListener('change', function() {
+	           const entryTime = document.getElementById('selectedEntryTime').value;
+	           const exitTime = this.value;
+
+	           if (entryTime && exitTime) {
+	               const entryHour = parseInt(entryTime, 10);
+	               const exitHour = parseInt(exitTime, 10);
+
+	               // 비교
+	               if (exitHour <= entryHour) {
+	                   warningMessage.style.display = 'block'; // 경고 메시지 표시
+	                   this.value = ""; // 선택 취소
+	                   document.getElementById('selectedExitTime').value = ""; // 저장된 퇴실 시간도 취소
+	               } else {
+	                   document.getElementById('selectedExitTime').value = this.value;
+	                   warningMessage.style.display = 'none'; // 경고 메시지 숨기기
+
+	                   // 선택된 퇴실 시간을 localStorage에 저장
+	                   localStorage.setItem('selectedExitTime', this.value);
+	               }
+	           }
+	       });
+	   });
+	</script>
+</body>
+</html>
