@@ -1,4 +1,4 @@
-# 공동주택 관리 시스템
+# 공동주택 편의 서비스
 
 ## 📁 프로젝트 소개
 프로젝트 기간 : 24/05 ~ 24/11 6개월
@@ -38,3 +38,10 @@ Java와 Spring Boot 기반으로 만든 공동주택 관리 웹 애플리케이�
 ## 프로젝트 보고서
 아래 링크에서 프로젝트 보고서를 확인할 수 있습니다.
 [보고서 보기](./Y2K_Capstone_Report.pdf)
+
+## 프로젝트 소개 영상
+
+아래 버튼을 클릭하면 프로젝트 설명 영상을 볼 수 있습니다.
+
+[![프로젝트 영상 썸네일](https://img.youtube.com/vi/FjRuwRUMK_A/0.jpg)](https://www.youtube.com/watch?v=FjRuwRUMK_A&list=PLw4cr5yjtB3if5EjCs6X0AaKLZopRFk_P&index=14)
+
